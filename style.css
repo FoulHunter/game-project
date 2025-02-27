@@ -4,19 +4,107 @@ body { margin : 0; }
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color:#694F70;
+  background: linear-gradient( 90deg, #694f70b0, #9D4FB0b0, #C930F0b0);
+}
+
+#blocker::before {
+  content: '';
+  width: 60rem;
+  height: 100%;
+  position: inherit;
+  left: -10em;
+  bottom: 0;
+  background: linear-gradient( 50deg, #694F70, #9D4FB0, #694F70);
+  transform: skewX(10deg);
 }
 
 #instructions {
-  width: 100%;
-  height: 100%;
+  position: relative;
+  width: 95%;
+  height: 85%;
+  left: 5%;
+  top: 15%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  font-family:Arial, Helvetica, sans-serif;
+  justify-content: left;
+  align-items: left;
+  text-align: left;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 22px;
+  min-height: 10%;
+  min-width: 20%;
+  color: #A4F030;
+}
+
+#titulo {
+  font-size: 78px;
+}
+
+.controles {
+  position: relative;
+  top: 5%;
+  left: 3%;
+}
+
+.modal {
+  background-color: #694f70b0;
+  opacity: 0;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  transition: all 0.3s ease-in-out;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.open {
+  opacity: 1;
+  z-index: 999;
+}
+
+.modal-inner {
+  background-color: #42463C;
+  border-radius: 25px;
+  box-shadow: 10px 10px #7E9B53;
+  padding: 10px 25px;
+  text-align: center;
+  height: 20em;
+  width: 30em;
+}
+
+.modal-inner p {
+  line-height: 28px;
+  margin: 12% 10%;
+}
+
+.howToPlay {
+  position: relative;
+  top: 10%;
+  left: 6%;
+}
+
+button {
+  width: 20%;
+  height: 10%;
+  padding: 10px 20px;
+  font-size: 1.5em;
+  font-style: oblique;
+  border-radius: 20px;
+  border-width: 0;
+  box-shadow: 3px 3px #7E9B53;
+  min-height: 80px;
+  min-width: 220px;
+  background-color: #9D4FB0;
+  color: #7E9B53;
+}
+
+button:hover {
+  background-color: #C930F0;
   color: #A4F030;
   cursor: pointer;
 }

@@ -1,25 +1,55 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-br">
+
   <head>
+
     <meta charset="UTF-8" />
+
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+
     <link rel="stylesheet" href="style.css">
+
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0" />
+
     <title>FPS GAME</title>
+
   </head>
   <body>
+
     <div id="blocker">
+
       <div id="instructions">
-        <p style="font-size: 36px;">
-          Click do ADAM SANDLER
+
+        <p id="titulo">
+          FPS Matemático
         </p>
-        <P>
-          MEXE - W A S D</br>
-          PULA - espaço</br>
-          OLHA - mouse
-        </p>
+
+        <button id="startBtn" type="button">Jogar</button>
+
+        <button class="controles" id="openModal" type="button">Controles</button>
+
+        <div class="modal" id="modal">
+
+          <div class="modal-inner">
+            <h2>CONTROLES</h2>
+            <p>
+              Mover-se: W A S D</br>
+              Pular: Espaço</br>
+              Mirar: Mouse</br>
+              Atirar: LMB
+            </p>
+            <button id="closeBtn">Fechar</button>
+          </div>
+
+        </div>
+
+        <button class="howToPlay" type="button">Como jogar</button>
+
       </div>
     </div>
+
     <script type="module" src="/src/main.js"></script>
+    <script type="module" src="/src/events.js"></script>
+
   </body>
 </html>
