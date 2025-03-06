@@ -3,118 +3,100 @@ import { PointerLockControls } from 'three/examples/jsm/Addons.js';
 
 export class Player {
 
-    //Definição de velocidade do jogador
-    moveSpd = 75;
+    //Definição de velocidade e input do jogador
     input = new THREE.Vector3();
     velocity = new THREE.Vector3();
 
-    //Inicialização de camera, controle e raycaster
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 500);
-    controls = new PointerLockControls(this.camera, document.body);
-    raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10);
-    
-    constructor(scene) {
-        this.camera.position.set(0, 10, 0);
+    //Booleanos para uso em evento
+    moveForward = false;
+	moveBackward = false;
+	moveLeft = false;
+	moveRight = false;
+    isSprnt = false;
 
-        document.addEventListener('keydown', this.onKeyDown.bind(this) );
-        document.addEventListener('keyup', this.onKeyUp.bind(this) );
+    //Inicialização de camera, controle e raycaster
+    camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 500 );
+    controls = new PointerLockControls( this.camera, document.body );
+    raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, -1, 0 ), 0, 10 );
+    
+    constructor() {
+        this.camera.position.set( 0, 10, 0 );
+
+        document.addEventListener( 'keydown', this.onKeyDown.bind(this) );
+        document.addEventListener( 'keyup', this.onKeyUp.bind(this) );
     }
 
-    applyInputs(dt) {
+    //Atualiza a posição do jogador a cada segundo
+    applyInputs( dt ) {
         if ( this.controls.isLocked === true ) {
-            this.velocity.x = this.input.x * this.moveSpd * dt;
-            this.velocity.z = this.input.z * this.moveSpd * dt;
+            
+            if ( this.isSprnt === true ) {
+                this.moveSpd = 7;
+            } else {
+                this.moveSpd = 15;
+            }
+
+            this.velocity.x -= this.velocity.x * this.moveSpd * dt;
+            this.velocity.z -= this.velocity.z * this.moveSpd * dt;
+
+            this.input.z -= Number( this.moveForward ) - Number( this.moveBackward );
+            this.input.x -= Number( this.moveRight ) - Number( this.moveLeft );
+            this.input.normalize();
+
+            if ( this.moveForward || this.moveBackward ) this.velocity.z -= this.input.z * 400.0 * dt;
+            if ( this.moveLeft || this.moveRight ) this.velocity.x -= this.input.x * 400.0 * dt;
 
             this.controls.moveRight( this.velocity.x * dt );
             this.controls.moveForward( this.velocity.z * dt );
         }    
     }
 
+    //Verifica se a tecla foi pressionada
     onKeyDown = function ( event ) {
       switch ( event.code ) {
         case 'ArrowUp':
         case 'KeyW':
-            this.input.z = this.moveSpd;
+            this.moveForward = true;
             break;
         case 'ArrowLeft':
         case 'KeyA':
-            this.input.x = -this.moveSpd;
+            this.moveLeft = true;
             break;
         case 'ArrowDown':
         case 'KeyS':
-            this.input.z = -this.moveSpd;
+            this.moveBackward = true;
             break;
         case 'ArrowRight':
         case 'KeyD':
-            this.input.x = this.moveSpd;
+            this.moveRight = true;
             break;
-        case 'Space':
-            this.velocity.y += 30;
+        case 'ShiftLeft':
+            this.isSprnt = true;
       }
     };
     
+    //Verifica se a tecla foi solta
     onKeyUp = function ( event ) {
       switch ( event.code ) {
         case 'ArrowUp':
         case 'KeyW':
-            this.input.z = 0;
+            this.moveForward = false;
             break;
         case 'ArrowLeft':
         case 'KeyA':
-            this.input.x = 0;
+            this.moveLeft = false;
             break;
         case 'ArrowDown':
         case 'KeyS':
-            this.input.z = 0;
+            this.moveBackward = false;
             break;
         case 'ArrowRight':
         case 'KeyD':
-            this.input.x = 0;
+            this.moveRight = false;
+            break;
+        case 'ShiftLeft':
+            this.isSprnt = false;
             break;
         }
     };
 }
-
-/* CÓDIGO DE MOVIMENTAÇÃO ANTIGO
-                    raycaster.ray.origin.copy( controls.object.position );
-					raycaster.ray.origin.y -= 10;
-
-					const intersections = raycaster.intersectObjects( objects, false );
-
-					const onObject = intersections.length > 0;
-
-					const delta = ( time - prevTime ) / 1000;
-
-                    velocity.x -= velocity.x * 10.0 * delta;
-					velocity.z -= velocity.z * 10.0 * delta;
-
-					velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
-
-					direction.z = Number( moveForward ) - Number( moveBackward );
-					direction.x = Number( moveRight ) - Number( moveLeft );
-					direction.normalize(); // this ensures consistent movements in all directions
-
-					if ( moveForward || moveBackward ) velocity.z -= direction.z * 400.0 * delta;
-					if ( moveLeft || moveRight ) velocity.x -= direction.x * 400.0 * delta;
-
-					if ( onObject === true ) {
-
-						velocity.y = Math.max( 0, velocity.y );
-						canJump = true;
-
-					}
-
-					controls.moveRight( - velocity.x * delta );
-					controls.moveForward( - velocity.z * delta );
-
-					controls.object.position.y += ( velocity.y * delta ); // new behavior
-
-					if ( controls.object.position.y < 10 ) {
-
-						velocity.y = 0;
-						controls.object.position.y = 10;
-
-						canJump = true;
-
-					}
-*/

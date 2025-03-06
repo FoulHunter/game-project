@@ -1,15 +1,10 @@
 import * as THREE from 'three';
-import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { Player } from './controls';
-import { time } from 'three/tsl';
+import { World } from './world';
 
-let scene, renderer, controls;
-
-const objects = [];
-
+let scene, world, renderer, controls;
 let prevTime = performance.now();
-const vertex = new THREE.Vector3();
-const color = new THREE.Color();
 
 //Renderizador
 renderer = new THREE.WebGLRenderer( {antialias: true} );
@@ -34,38 +29,15 @@ function setLights() {
   addHelpers(dirLight);
 }
 
-controls = new Player(scene);
+//Instanciação de controle do jogador
+controls = new Player();
 
-//Chão
-let floorGeometry = new THREE.PlaneGeometry( 2000, 2000, 100, 100 );
-floorGeometry.rotateX( - Math.PI / 2 );
-const floorMaterial = new THREE.MeshStandardMaterial( { color: 0x777788 } );
-const floor = new THREE.Mesh( floorGeometry, floorMaterial );
+//Instanciação do mundo
+world = new World(scene);
 
-//Parades
-let wallGeometry = new THREE.BoxGeometry(200, 110, 1);
-let wallYGeometry = new THREE.BoxGeometry(200, 110, 1);
-wallYGeometry.rotateY(-Math.PI / 2);
-const wallMaterial = new THREE.MeshStandardMaterial({color: 0x777788});
-const wall1 = new THREE.Mesh(wallGeometry, wallMaterial);
-const wall2 = new THREE.Mesh(wallGeometry, wallMaterial);
-const wallY1 = new THREE.Mesh(wallYGeometry, wallMaterial);
-const wallY2 = new THREE.Mesh(wallYGeometry, wallMaterial);
-  
-wall1.position.set(0, 55, 100);
-wall2.position.set(0, 55, -100);
-wallY1.position.set(100, 55, 0);
-wallY2.position.set(-100, 55, 0);
-
-//Teto
-const tetoGeometry = new THREE.BoxGeometry(200, 200, 1);
-const tetoMaterial = new THREE.MeshStandardMaterial({color: 0x777788});
-tetoGeometry.rotateX(-Math.PI / 2);
-const teto = new THREE.Mesh(tetoGeometry, tetoMaterial);
-teto.position.set(0, 110, 0);
-
-//Adicionar MESH
-scene.add( floor, wall1, wall2, wallY1, wallY2, teto );
+//Contador de FPS
+const stats = new Stats();
+document.body.append(stats.dom);
 
 //Helpers
 function addHelpers(lightOrigin) {
@@ -91,6 +63,8 @@ function animate() {
   requestAnimationFrame(animate);
   controls.applyInputs(delta);
   renderer.render( scene, controls.camera );
+
+  stats.update();
 
   prevTime = time;
 }
